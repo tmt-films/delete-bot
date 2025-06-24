@@ -72,3 +72,37 @@ async def start_command(client: Client, message: Message):
 @Client.on_message(filters.command("ping"))
 async def ping_command(client: Client, message: Message):
     await message.reply_text("Pong!")
+
+@Client.on_message(filters.command("settype") & filters.group & filters.user(ADMINS))
+async def settype_command(client: Client, message: Message):
+    chat_id = message.chat.id
+    if len(message.command) != 2:
+        await message.reply_text("Usage: /settype <type>\nExample: /settype media\nTypes: all, text, media")
+        return
+
+    new_message_type = message.command[1].lower()
+    if new_message_type not in ["all", "text", "media"]:
+        await message.reply_text("Invalid message type. Use 'all', 'text', or 'media'.")
+        return
+
+    current_settings = get_delete_time(chat_id)
+    if not current_settings:
+        await message.reply_text("No auto-delete delay is currently set for this chat. "
+                                 "Please use /settime <delay> [type] to set a delay first.")
+        return
+
+    current_delay, _ = current_settings # We only need the current delay
+
+    try:
+        set_delete_time(chat_id, current_delay, new_message_type)
+        # Convert delay back to a human-readable format for the confirmation message
+        if current_delay % 3600 == 0:
+            delay_str = f"{current_delay // 3600}h"
+        elif current_delay % 60 == 0:
+            delay_str = f"{current_delay // 60}m"
+        else:
+            delay_str = f"{current_delay}s"
+        await message.reply_text(f"Auto-delete message type for this chat updated to '{new_message_type}'. "
+                                 f"The current delay is {delay_str}.")
+    except Exception as e:
+        await message.reply_text(f"An unexpected error occurred: {e}")

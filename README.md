@@ -26,6 +26,9 @@ This is a simple Telegram bot built using **Pyrogram**. It automatically deletes
 |                         | Example: `/settime 30m text` (delete text messages after 30 minutes)        |              |
 |                         | Example: `/settime 1h media` (delete media messages after 1 hour)           |              |
 |                         | Example: `/settime 10s` (delete all messages after 10 seconds)              |              |
+| `/settype <type>`       | Update only the message type (`all`, `text`, `media`) for auto-deletion.    | Admins only  |
+|                         | Requires a delay to be already set with `/settime`.                         |              |
+|                         | Example: `/settype text`                                                    |              |
 | `/deltime`              | Show current auto-delete delay and message type for the chat.               | Admins only  |
 | `/start`                | Show a welcome message (primarily for private chat with the bot).           | All users    |
 | `/ping`                 | Check if the bot is responsive.                                             | All users    |
